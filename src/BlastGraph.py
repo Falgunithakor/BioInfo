@@ -10,9 +10,10 @@ import matplotlib.pyplot as plt
 class BlastGraph(object):
     def __init__(self):
         self.blast_data_path = "../data/blastdata/*.o"
-        self.blast_experiment = ""
-        self.evalue = 1e-10
         self.blast_output_path = ""
+        self.blast_experiment = ""
+        self.generate_gml_files = False;
+        self.evalue = 0.000000000001 #1e-12
         self.blast_graph = nx.Graph()
         self.initialize_variables()
 
@@ -29,28 +30,30 @@ class BlastGraph(object):
             # Parse the Blast file
             qresults = SearchIO.parse(blast_file, 'blast-tab', comments=True)
             for qresult in qresults:
-                #write_line = ""
+                write_line = ""
+                write_line += qresult.id + ":"
                 # Go to the Hit section of query
                 for hit in qresult[:]:
                     if not self.blast_graph.has_node(qresult.id):
                         self.blast_graph.add_node(qresult.id)
-                    #write_line += qresult.id + ":"
-                    # Check if Hit has min value 1e-10
+                    # Check if Hit has min value
                     filtered_hit = hit.filter(evalue_filter)
                     if filtered_hit is not None:
                         if not self.blast_graph.has_node(filtered_hit.id):
                             self.blast_graph.add_node(filtered_hit.id)
                         # Add Edge between graph nodes
                         self.blast_graph.add_edge(qresult.id, filtered_hit.id)
-                        #write_line += filtered_hit.id + ","
-                '''
+                        write_line += filtered_hit.id + ","
+
                 if write_line != "":
                     with open(file_name, "a") as f_handle:
                         f_handle.write(write_line + '\n')
-                '''
-        file_name = "{}/blast_graph.gml".format(self.blast_output_path)
-        with open(file_name, "a") as f_handle:
-            nx.write_gml(self.blast_graph, f_handle)
+
+        # Write GML files
+        if self.generate_gml_files:
+            file_name = "{}/blast_graph.gml".format(self.blast_output_path)
+            with open(file_name, "a") as f_handle:
+                nx.write_gml(self.blast_graph, f_handle)
 
     def generate_connected_component_graphs(self):
         # Get Connected Component sub graphs
@@ -59,21 +62,14 @@ class BlastGraph(object):
         plt.figure(1, figsize=(25, 25))
         for sub_graph in connected_component_sub_graphs:
             index += 1
-            '''
             file_name = "{}/graph_{}.txt".format(self.blast_output_path, index)
             with open(file_name, "a") as f_handle:
                 f_handle.write(str(nx.nodes(sub_graph)) + ':' + str(nx.edges(sub_graph)) + '\n')
-            '''
-
-            file_name = "{}/graph_{}.gml".format(self.blast_output_path,index)
-            with open(file_name, "a") as f_handle:
-                nx.write_gml(sub_graph, f_handle)
-
-            '''
-            if len(nx.nodes(sub_graph)) in (5, 25):
-                nx.random_layout(sub_graph)
-                plt.show()
-            '''
+            # Write GML files
+            if self.generate_gml_files:
+                file_name = "{}/graph_{}.gml".format(self.blast_output_path,index)
+                with open(file_name, "a") as f_handle:
+                    nx.write_gml(sub_graph, f_handle)
 
 
 if __name__ == "__main__":
