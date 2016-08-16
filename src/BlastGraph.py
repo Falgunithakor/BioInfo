@@ -31,7 +31,7 @@ class BlastGraph(object):
             for qresult in qresults:
                 #write_line = ""
                 # Go to the Hit section of query
-                for hit in qresult[:3]:
+                for hit in qresult[:]:
                     if not self.blast_graph.has_node(qresult.id):
                         self.blast_graph.add_node(qresult.id)
                     #write_line += qresult.id + ":"
