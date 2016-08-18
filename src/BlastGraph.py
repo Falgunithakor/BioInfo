@@ -9,13 +9,13 @@ __author__ = 'FalguniT'
 
 
 class BlastGraph(object):
-    def __init__(self):
-        self.blast_data_path = "../data/blastdata/*.o"
+    def __init__(self, evalue = 1e-06):
+        self.blast_data_path = "../data/testblastdata/*.o"
         self.blast_connected_graph_statistics_file = ""
         self.blast_output_path = ""
         self.blast_experiment = ""
         self.generate_gml_files = False
-        self.evalue = 0.000000000000000000000000000001  # 1e-30
+        self.evalue = evalue  # 1e-30
         self.blast_graph = nx.Graph()
         self.initialize_variables()
 
@@ -33,21 +33,25 @@ class BlastGraph(object):
         evalue_filter = lambda hsp: hsp.evalue < self.evalue
         file_name = "{}/blast_graph.txt".format(self.blast_output_path)
         for blast_file in glob.glob(self.blast_data_path):
-            print("working on " + blast_file)
+            #print("working on " + blast_file)
             # Parse the Blast file
             qresults = SearchIO.parse(blast_file, 'blast-tab', comments=True)
             for qresult in qresults:
                 write_line = ""
                 write_line += qresult.id + ":"
+                # Add node to graph if not present
+                if not self.blast_graph.has_node(qresult.id):
+                    self.blast_graph.add_node(qresult.id)
+                    print qresult.id
                 # Go to the Hit section of query
                 for hit in qresult[:]:
-                    if not self.blast_graph.has_node(qresult.id):
-                        self.blast_graph.add_node(qresult.id)
-                    # Check if Hit has min value
+
+                    # Check if Hit has min e-value
                     filtered_hit = hit.filter(evalue_filter)
                     if filtered_hit is not None:
                         if not self.blast_graph.has_node(filtered_hit.id):
                             self.blast_graph.add_node(filtered_hit.id)
+                            print filtered_hit.id
                         # Add Edge between graph nodes
                         self.blast_graph.add_edge(qresult.id, filtered_hit.id)
                         write_line += filtered_hit.id + ","
@@ -104,39 +108,43 @@ class BlastGraph(object):
 
 
 if __name__ == "__main__":
-    objblastgraph = BlastGraph()
-    objblastgraph.generate_blast_graph()
-    print("graph has %d nodes with %d edges"
-          % (nx.number_of_nodes(objblastgraph.blast_graph), nx.number_of_edges(objblastgraph.blast_graph)))
-    objblastgraph.generate_connected_component_graphs()
-    print("connected components by function %s " % nx.number_connected_components(objblastgraph.blast_graph))
-    with open("{}/details.txt".format(objblastgraph.blast_output_path), "a") as f_handle:
-        chrysochromulina_count = 0
-        geph_count = 0
-        iso_count = 0
-        ehux_count = 0
-        for node in nx.nodes(objblastgraph.blast_graph):
-            if node.startswith("KOO"):
-                chrysochromulina_count += 1
-            elif node.startswith("evm.model.Contig"):
-                geph_count += 1
-            elif node.startswith("evm.model.scaffold"):
-                iso_count += 1
-            else:
-                ehux_count += 1
+    #evalue range
+    e_value_filter_range = [1e-06, 1e-10, 1e-15, 1e-20,1e-30,1e-40,1e-50, 1e-75, 1e-100]
+    for evalue in e_value_filter_range:
+        print "Executing for experiment evalue : " + str(evalue)
+        objblastgraph = BlastGraph(evalue)
+        objblastgraph.generate_blast_graph()
+        print("graph has %d nodes with %d edges"
+              % (nx.number_of_nodes(objblastgraph.blast_graph), nx.number_of_edges(objblastgraph.blast_graph)))
+        objblastgraph.generate_connected_component_graphs()
+        print("connected components by function %s " % nx.number_connected_components(objblastgraph.blast_graph))
+        with open("{}/details_{}.txt".format(objblastgraph.blast_output_path, objblastgraph.evalue), "a") as f_handle:
+            chrysochromulina_count = 0
+            geph_count = 0
+            iso_count = 0
+            ehux_count = 0
+            for node in nx.nodes(objblastgraph.blast_graph):
+                if node.startswith("KOO"):
+                    chrysochromulina_count += 1
+                elif node.startswith("evm.model.Contig"):
+                    geph_count += 1
+                elif node.startswith("evm.model.scaffold"):
+                    iso_count += 1
+                else:
+                    ehux_count += 1
 
-        f_handle.write("Experiment for e-value %s" % objblastgraph.evalue + '\n')
-        f_handle.write("Total %d nodes with %d edges"
-                       % (nx.number_of_nodes(objblastgraph.blast_graph),
-                          nx.number_of_edges(objblastgraph.blast_graph)) + '\n')
-        f_handle.write("Chry count %d"
-                       % (chrysochromulina_count) + '\n')
-        f_handle.write("Geph count %d"
-                       % (geph_count) + '\n')
-        f_handle.write("ISO count %d"
-                       % (iso_count) + '\n')
-        f_handle.write("Ehux count %d"
-                       % (ehux_count) + '\n')
+            f_handle.write("Experiment for e-value %s" % objblastgraph.evalue + '\n')
+            f_handle.write("Total %d nodes with %d edges"
+                           % (nx.number_of_nodes(objblastgraph.blast_graph),
+                              nx.number_of_edges(objblastgraph.blast_graph)) + '\n')
+            f_handle.write("Chry count %d"
+                           % (chrysochromulina_count) + '\n')
+            f_handle.write("Geph count %d"
+                           % (geph_count) + '\n')
+            f_handle.write("ISO count %d"
+                           % (iso_count) + '\n')
+            f_handle.write("Ehux count %d"
+                           % (ehux_count) + '\n')
 
-        f_handle.write(
-            "Total %s connected components " % nx.number_connected_components(objblastgraph.blast_graph))
+            f_handle.write(
+                "Total %s connected components " % nx.number_connected_components(objblastgraph.blast_graph))
