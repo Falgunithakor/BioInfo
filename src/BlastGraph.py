@@ -14,14 +14,16 @@ class BlastGraph(object):
         self.blast_connected_graph_statistics_file = ""
         self.blast_output_path = ""
         self.blast_experiment = ""
-        self.generate_gml_files = False
+        self.generate_gml_files = True
         self.evalue = evalue  # 1e-30
+        self.perc_identity = 40
         self.blast_graph = nx.Graph()
         self.initialize_variables()
 
     def initialize_variables(self):
         experiment_timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-        self.blast_output_path = "../output/blast_connected_graphs_{}_{}".format(self.evalue, experiment_timestamp)
+        filters = str(self.evalue) + str(self.perc_identity)
+        self.blast_output_path = "../output/blast_connected_graphs_{}_{}".format(filters, experiment_timestamp)
         os.makedirs(self.blast_output_path)
         self.blast_connected_graph_statistics_file = "{}/blast_connected_graph_statistics.csv".format(
             self.blast_output_path)
@@ -31,6 +33,9 @@ class BlastGraph(object):
 
     def generate_blast_graph(self):
         evalue_filter = lambda hsp: hsp.evalue < self.evalue
+        if self.perc_identity is not '':
+            perc_filter = lambda hsp: hsp.ident_pct > self.perc_identity
+
         file_name = "{}/blast_graph.txt".format(self.blast_output_path)
         for blast_file in glob.glob(self.blast_data_path):
             #print("working on " + blast_file)
@@ -42,12 +47,17 @@ class BlastGraph(object):
                 # Add node to graph if not present
                 if not self.blast_graph.has_node(qresult.id):
                     self.blast_graph.add_node(qresult.id)
-                    print qresult.id
                 # Go to the Hit section of query
                 for hit in qresult[:]:
 
                     # Check if Hit has min e-value
                     filtered_hit = hit.filter(evalue_filter)
+
+                    if filtered_hit is not None and self.perc_identity is not '':
+                        filtered_hit = filtered_hit.filter(perc_filter)
+                        if filtered_hit is not None:
+                            print 'filtered with perc ', filtered_hit.id
+
                     if filtered_hit is not None:
                         if not self.blast_graph.has_node(filtered_hit.id):
                             self.blast_graph.add_node(filtered_hit.id)
@@ -109,7 +119,7 @@ class BlastGraph(object):
 
 if __name__ == "__main__":
     #evalue range
-    e_value_filter_range = [1e-06, 1e-10, 1e-15, 1e-20,1e-30,1e-40,1e-50, 1e-75, 1e-100]
+    e_value_filter_range = [1e-06]
     for evalue in e_value_filter_range:
         print "Executing for experiment evalue : " + str(evalue)
         objblastgraph = BlastGraph(evalue)
@@ -118,7 +128,8 @@ if __name__ == "__main__":
               % (nx.number_of_nodes(objblastgraph.blast_graph), nx.number_of_edges(objblastgraph.blast_graph)))
         objblastgraph.generate_connected_component_graphs()
         print("connected components by function %s " % nx.number_connected_components(objblastgraph.blast_graph))
-        with open("{}/details_{}.txt".format(objblastgraph.blast_output_path, objblastgraph.evalue), "a") as f_handle:
+        filters = str(objblastgraph.evalue) + str(objblastgraph.perc_identity)
+        with open("{}/details_{}.txt".format(objblastgraph.blast_output_path, filters), "a") as f_handle:
             chrysochromulina_count = 0
             geph_count = 0
             iso_count = 0
