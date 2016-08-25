@@ -1,0 +1,21 @@
+# BLASTP 2.2.29+
+# Query: evm.model.scaffold_124.10 EVMevm.TU.scaffold_124.10   scaffold_124:47483-55617(+)
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 3 hits found
+evm.model.scaffold_124.10	110131	50.22	687	257	19	812	1475	494	1118	3e-168	  553
+evm.model.scaffold_124.10	349042	39.09	110	48	4	812	917	112	206	5e-07	54.3
+# Query: evm.model.scaffold_314.1 EVMevm.TU.scaffold_314.1   scaffold_314:165-5424(+)
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 102 hits found
+evm.model.scaffold_314.1	349042	44.54	613	330	6	846	1454	514	1120	8e-135	  454
+evm.model.scaffold_314.1	110131	27.96	658	421	20	835	1453	125	768	4e-58	  220
+# BLASTP 2.2.29+
+# Query: evm.model.scaffold_6.264 EVMevm.TU.scaffold_6.264   scaffold_6:1164810-1170321(-)
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 145 hits found
+evm.model.scaffold_6.264	119075	33.95	972	470	23	726	1675	94	915	5e-130	  432
+evm.model.scaffold_6.264	110131	24.90	253	170	9	306	550	707	947	4e-04	45.4
+# BLAST processed 18712 queries

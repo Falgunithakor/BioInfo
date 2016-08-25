@@ -1,0 +1,23 @@
+# BLASTP 2.2.29+
+# Query: KOO20783.1 protein serine threonine [Chrysochromulina sp. CCMP291]
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 2 hits found
+KOO20783.1	110131	36.66	341	185	14	96	412	51	384	8e-27	  115
+KOO20783.1	119075	30.45	381	198	13	244	565	92	464	3e-15	80.5
+# BLASTP 2.2.29+
+# Query: KOO20784.1 hypothetical protein Ctob_000197 [Chrysochromulina sp. CCMP291]
+# Database: Ehux_JGI_prot.fasta
+# 0 hits found
+# BLASTP 2.2.29+
+# Query: KOO20785.1 ankyrin repeat-containing protein [Chrysochromulina sp. CCMP291]
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 3 hits found
+KOO20785.1	349042	40.24	82	49	0	42	123	211	292	9e-09	57.8
+KOO20785.1	110131	41.77	79	46	0	53	131	6	84	2e-08	53.5
+# BLASTP 2.2.29+
+# Query: KOO53918.1 hypothetical protein Ctob_012761 [Chrysochromulina sp. CCMP291]
+# Database: Ehux_JGI_prot.fasta
+# 0 hits found
+# BLAST processed 16765 queries

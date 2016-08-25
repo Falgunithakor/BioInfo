@@ -1,0 +1,17 @@
+# BLASTP 2.2.29+
+# Query: KOO20783.1 protein serine threonine [Chrysochromulina sp. CCMP291]
+# Database: iso_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 6 hits found
+KOO20783.1	evm.model.scaffold_6.264	28.12	224	96	10	1136	1329	560	748	4e-12	71.2
+KOO20783.1	evm.model.scaffold_314.1	26.98	252	112	15	1140	1352	821	1039	2e-04	46.2
+KOO20783.1	evm.model.scaffold_124.10	35.23	88	39	4	728	803	807	888	3e-04	45.4
+# BLASTP 2.2.29+
+# Query: KOO20784.1 hypothetical protein Ctob_000197 [Chrysochromulina sp. CCMP291]
+# Database: iso_final_prot.fasta
+# 0 hits found
+# BLASTP 2.2.29+
+# Query: KOO21475.1 hypothetical protein Ctob_000197 [Chrysochromulina sp. CCMP291]
+# Database: iso_final_prot.fasta
+# 0 hits found
+# BLAST processed 16765 queries

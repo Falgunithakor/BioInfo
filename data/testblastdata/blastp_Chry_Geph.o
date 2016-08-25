@@ -1,0 +1,12 @@
+# BLASTP 2.2.29+
+# Query: KOO20783.1 protein serine threonine [Chrysochromulina sp. CCMP291]
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 72 hits found
+KOO20783.1	evm.model.Contig7.13	41.97	274	142	6	269	527	352	623	4e-49	  189
+KOO20783.1	evm.model.Contig911.1	35.69	269	141	6	657	900	874	1135	3e-30	  132
+# BLASTP 2.2.29+
+# Query: KOO20784.1 hypothetical protein Ctob_000197 [Chrysochromulina sp. CCMP291]
+# Database: geph_final_prot.fasta
+# 0 hits found
+# BLAST processed 16765 queries

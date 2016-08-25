@@ -1,0 +1,22 @@
+# BLASTP 2.2.29+
+# Query: evm.model.scaffold_124.10 EVMevm.TU.scaffold_124.10   scaffold_124:47483-55617(+)
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 16 hits found
+evm.model.scaffold_124.10	evm.model.Contig911.1	43.92	485	198	15	1038	1491	7	448	4e-93	  322
+evm.model.scaffold_124.10	evm.model.Contig973.13	31.25	112	39	4	840	921	376	479	9e-04	45.1
+# BLASTP 2.2.29+
+# Query: evm.model.scaffold_314.1 EVMevm.TU.scaffold_314.1   scaffold_314:165-5424(+)
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 79 hits found
+evm.model.scaffold_314.1	evm.model.Contig0.72	41.25	1154	599	19	344	1454	47	1164	0.0	  773
+evm.model.scaffold_314.1	evm.model.Contig911.1	30.30	99	68	1	1355	1453	172	269	2e-04	46.6
+# BLASTP 2.2.29+
+# Query: evm.model.scaffold_6.264 EVMevm.TU.scaffold_6.264   scaffold_6:1164810-1170321(-)
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 130 hits found
+evm.model.scaffold_6.264	evm.model.Contig0.72	39.90	629	296	13	1016	1620	954	1524	1e-114	  401
+evm.model.scaffold_6.264	evm.model.Contig973.13	39.90	589	285	9	1054	1622	1434	1973	1e-114	  404
+# BLAST processed 18712 queries

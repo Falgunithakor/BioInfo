@@ -1,0 +1,15 @@
+# BLASTP 2.2.29+
+# Query: evm.model.Contig0.72
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 7 hits found
+evm.model.Contig0.72	110131	95.48	310	14	0	1	310	1	310	0.0	  578
+evm.model.Contig0.72	349042	31.89	323	182	9	3	311	22	320	9e-40	  147
+# BLASTP 2.2.29+
+# Query: evm.model.Contig973.13
+# Database: Ehux_JGI_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 2 hits found
+evm.model.Contig973.13	119075	99.07	428	4	0	1	428	1	428	0.0	  855
+evm.model.Contig973.13	110131	30.89	246	118	10	148	392	33	227	2e-12	67.0
+# BLAST processed 52680 queries

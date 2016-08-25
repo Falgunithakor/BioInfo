@@ -1,0 +1,18 @@
+# BLASTP 2.2.29+
+# Query: 349042
+# Database: iso_final_prot.fasta
+# 0 hits found
+# BLASTP 2.2.29+
+# Query: 349043
+# Database: iso_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 3 hits found
+349043	evm.model.scaffold_314.1	62.09	153	58	0	17	169	98	250	5e-54	  176
+349043	evm.model.scaffold_124.10	31.63	196	127	6	1	191	55	248	1e-15	72.4
+# BLASTP 2.2.29+
+# Query: 110131
+# Database: iso_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 25 hits found
+110131	evm.model.scaffold_6.264	63.61	360	119	4	119	468	465	822	5e-146	  443
+# BLAST processed 30448 queries

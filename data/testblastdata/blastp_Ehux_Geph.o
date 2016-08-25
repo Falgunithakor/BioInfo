@@ -1,0 +1,14 @@
+# BLASTP 2.2.29+
+# Query: 349042
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 1 hits found
+349042	evm.model.Contig973.13	60.00	50	20	0	23	72	79	128	5e-11	57.0
+# BLASTP 2.2.29+
+# Query: 349042
+# Database: geph_final_prot.fasta
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 14 hits found
+349042	evm.model.Contig973.13	80.79	203	14	3	1	195	83	268	9e-92	  273
+349042	evm.model.Contig911.1	54.39	171	23	4	1	171	44	159	2e-39	  136
+# BLAST processed 30448 queries

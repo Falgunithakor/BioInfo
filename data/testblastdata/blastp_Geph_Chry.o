@@ -1,0 +1,21 @@
+# BLASTP 2.2.29+
+# Query: evm.model.Contig7.13
+# Database: GCA_001275005.1_Ctobinv2_protein.faa
+# 0 hits found
+# BLASTP 2.2.29+
+# Query: evm.model.Contig911.1
+# Database: GCA_001275005.1_Ctobinv2_protein.faa
+# 0 hits found
+# BLASTP 2.2.29+
+# Query: evm.model.Contig973.13
+# Database: GCA_001275005.1_Ctobinv2_protein.faa
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 1 hits found
+evm.model.Contig973.13	KOO20783.1	56.67	30	10	1	11	40	307	333	4e-04	37.7
+# BLASTP 2.2.29+
+# Query: evm.model.Contig0.72
+# Database: GCA_001275005.1_Ctobinv2_protein.faa
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 5 hits found
+evm.model.Contig0.72	KOO53918.1	47.15	333	91	7	36	283	82	414	2e-74	  236
+# BLAST processed 52680 queries
