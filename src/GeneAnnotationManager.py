@@ -24,6 +24,7 @@ class GeneAnnotationManager(object):
 
     def map_sequence_to_gene_annotation(self, sequence_no):
         gene_annotation_data = []
+        gene_annotation_row = []
         # Retrieve annotation data based on sequence no
         if re.match(r'^\d', sequence_no):
             gene_annotation_data = self.ehux_gene_annotation_data
@@ -32,9 +33,13 @@ class GeneAnnotationManager(object):
         elif re.match(r'^evm.model.scaffold', sequence_no):
             gene_annotation_data = self.iso_gene_annotation_data
         # Read gene annotation line
-        gene_annotation_row = gene_annotation_data[
-            [i for i, item in enumerate(gene_annotation_data) if str(item).startswith(sequence_no + '\t')]]
-        if len(gene_annotation_row) > 0:
-            gene_annotation_row = re.split(r'\t', gene_annotation_row[0])
-            gene_annotation_row = [w.replace(',', ';') for w in gene_annotation_row]
+        if len(gene_annotation_data) > 0:
+            gene_annotation_row = gene_annotation_data[
+                [i for i, item in enumerate(gene_annotation_data) if str(item).startswith(sequence_no + '\t')]]
+            if len(gene_annotation_row) > 0:
+                gene_annotation_row = re.split(r'\t', gene_annotation_row[0])
+                gene_annotation_row = [w.replace(',', ';') for w in gene_annotation_row]
+        # gene annotation not found then set default string
+        if len(gene_annotation_row) is 0:
+            gene_annotation_row = np.full((10), '-', dtype=np.str).tolist()
         return gene_annotation_row
