@@ -24,6 +24,7 @@ class GeneExpressionManager(object):
 
     def map_sequence_to_gene_expression(self, sequence_no):
         gene_expression_data = []
+        gene_expression_row = []
         if re.match(r'^\d', sequence_no):
             gene_expression_data = self.ehux_gene_expression_data
         elif re.match(r'^evm.model.Contig', sequence_no):
@@ -31,5 +32,9 @@ class GeneExpressionManager(object):
         elif re.match(r'^evm.model.scaffold', sequence_no):
             gene_expression_data = self.iso_gene_expression_data
         # read gene expression line assuming first column as sequence name
-        gene_expression_row = gene_expression_data[np.where(gene_expression_data[:, 0] == sequence_no)]
+        if len(gene_expression_data) > 0:
+            gene_expression_row = gene_expression_data[np.where(gene_expression_data[:, 0] == sequence_no)]
+
+        if len(gene_expression_row) is 0:
+            gene_expression_row = np.zeros((1, 4), dtype=np.int)
         return gene_expression_row
