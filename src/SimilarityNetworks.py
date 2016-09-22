@@ -39,6 +39,7 @@ class SimilarityNetworks(object):
             query_results = SearchIO.parse(blast_file, 'blast-tab', comments=True)
             for query_result in query_results:
                 if query_result.id in target_sequences:
+                    print query_result.id in target_sequences,  query_result.id
                     self.generate_blast_graph(query_result)
 
     def generate_blast_graph(self, query_result):
@@ -62,7 +63,7 @@ class SimilarityNetworks(object):
                                           alnspn=filtered_hit.hsps[0].aln_span,
                                           gapopenno=filtered_hit.hsps[0].gapopen_num,
                                           bitscore=filtered_hit.hsps[0].bitscore
-                                          )
+                )
 
     def add_graph_node(self, sequence_no):
         # retrieve gene expression and gene annotation data for query result id (query sequence)
@@ -81,7 +82,7 @@ class SimilarityNetworks(object):
                                   gagoname=gene_annotataion_row[7],
                                   gaenzymecodes=gene_annotataion_row[8],
                                   gainterproids=gene_annotataion_row[9]
-                                  )
+        )
 
     def generate_sequence_gene_annotation_mapping(self):
         pass
@@ -91,9 +92,20 @@ class SimilarityNetworks(object):
 
     def write_blast_graph_file(self):
         file_name = "{}/blast_graph.txt".format(self.blast_output_path)
-        with open(file_name, "wb") as f_handle:
+        if len(nx.nodes(self.blast_graph)) > 0:
+            with open(file_name, "wb") as f_handle:
+                f_handle.write(
+                    'Source' + ',' + str(
+                        [value for value in self.blast_graph.node[nx.nodes(self.blast_graph)[0]].iterkeys()]).strip(
+                        '[]') + ',')
+                f_handle.write(
+                    'Target' + ',' + str(
+                        [value for value in self.blast_graph.node[nx.nodes(self.blast_graph)[0]].iterkeys()]).strip(
+                        '[]') + ',')
+                f_handle.write(
+                    'evalue' + ',' + 'identpct' + ',' + 'mismatchno' + ',' + 'aln' + ',' + 'alnspn' + ',' + 'gapopenno' + ',' + 'bitscore' + '\n')
+
             for u, v, edata in self.blast_graph.edges(data=True):
-                print u, v,
                 f_handle.write(
                     str(u) + ',' + str([value for value in self.blast_graph.node[u].itervalues()]).strip('[]') + ',')
                 f_handle.write(
@@ -146,7 +158,8 @@ if __name__ == "__main__":
     gene_annotation_manager.load_gene_annotation_data()
 
     similarity_networks = SimilarityNetworks(gene_expression_manager, gene_annotation_manager)
-    target_sequences = ['432589', 'evm.model.Contig1207.8', 'evm.model.Contig1623.9', 'evm.model.scaffold_26.48']
+    target_sequences = np.genfromtxt("../data/additiona_analysis/Ehux Lipid Metabolism Protein IDs.csv", delimiter='\n', dtype=str)
+    print target_sequences
     similarity_networks.generate_blast_data(target_sequences)
 
     similarity_networks.write_blast_graph_file()
