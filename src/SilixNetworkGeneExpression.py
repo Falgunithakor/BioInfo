@@ -92,11 +92,13 @@ class SilixNetworkGeneExpression(object):
             print "Please select appropriate X axis and Y axis to plot chart"
             print "Network\t\t\t:\t0\n9mM Ca Mean\t\t:\t1\n9mM Ca Variance\t:\t2\n9mM Ca STD\t\t:\t3"
             print "Spike Mean\t\t:\t4\nSpike Variance\t:\t5\nSpike STD\t\t:\t6"
-            x_column = input('Enter X-axis number:')
-            y_column = input('Enter Y-axis number:')
+            #x_column = input('Enter X-axis number:')
+            #y_column = input('Enter Y-axis number:')
+            x_column  = 0
+            y_column = 1
 
             if x_column is 0:
-                x_label = "Network"
+                x_label = "Networks"
             elif x_column in [1,2,3]:
                 x_label = "9mM Ca factor"
             elif x_column in [4,5,6]:
@@ -144,20 +146,41 @@ class SilixNetworkGeneExpression(object):
         self.network_ehux_gene_expression = np.asarray(self.network_ehux_gene_expression)
         self.network_geph_gene_expression = np.asarray(self.network_geph_gene_expression)
 
-    def plot_chart(self, x, y, title, x_axis_label, y_axis_label):
-        e = self.network_gene_expressions[:, 3]
-        e2 = self.network_gene_expressions[:, 6]
+    def plot_chart(self, x, y, title, x_axis_label, y_axis_label, chart_type=1):
+        if chart_type == 1:
+            e = self.network_gene_expressions[:, 3]
+            e2 = self.network_gene_expressions[:, 6]
+            fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
+            ax0.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 1], yerr=e, linestyle='None', fmt='-o')
+            ax0.set_title('9mM Ca factor Mean and Standard deviation')
+            ax0.set_ylabel(r'9mM Ca factor')
+            ax0.axhline(0)
+            ax1.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 4], yerr=e2, linestyle='None', fmt='o')
+            ax1.set_title('Spike factor Mean and Standard deviation')
+            ax1.set_ylabel(r'Spike factor')
+            ax1.axhline(0)
 
-        fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True )
-        ax0.errorbar(x, y, xerr=e, linestyle='None', fmt='-o')
-        ax0.set_title(y_axis_label + ' Mean and Standard deviation')
+            plt.xlim(-1, len(self.network_gene_expressions) )
+            plt.xlabel(x_axis_label, fontsize=16)
 
-        ax1.errorbar(x, y, yerr=e2, linestyle='None', fmt='o')
-        ax1.set_title(y_axis_label + ' Mean and standard deviation')
+        elif chart_type == 2:
+            e = self.network_gene_expressions[:, 3]
+            e2 = self.network_gene_expressions[:, 6]
+            fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
+            ax0.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 1], yerr=e,
+                         linestyle='None', fmt='-o')
+            ax0.set_title('9mM Ca factor Mean and Standard deviation')
+            ax0.set_ylabel(r'9mM Ca factor')
+            ax0.axhline(0)
+            ax1.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 4], yerr=e2,
+                         linestyle='None', fmt='o')
+            ax1.set_title('Spike factor Mean and Standard deviation')
+            ax1.set_ylabel(r'Spike factor')
+            ax1.axhline(0)
 
-        plt.xlabel(x_axis_label, fontsize=16)
-        plt.ylabel(y_axis_label, fontsize=16)
-
+            plt.xlim(-1, len(self.network_gene_expressions))
+            plt.xlabel(x_axis_label, fontsize=16)
+        '''
         #plt.axhline(0)
         #plt.axvline(0)
         if min(x) < min(y):
@@ -172,6 +195,7 @@ class SilixNetworkGeneExpression(object):
         #plt.ylim(min_axes, max_axes)
         #plt.gca().set_aspect('equal', adjustable='box')
         #plt.axis([min_axes, max_axes, min_axes, max_axes])
+        '''
         plt.show()
 
 
