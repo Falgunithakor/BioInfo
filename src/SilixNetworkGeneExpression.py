@@ -48,7 +48,7 @@ class SilixNetworkGeneExpression(object):
                 f_handle.write(str(gene_expression_row.tolist()).strip('[]').replace("'", "") + '\n')
         print "Generating Gene Expression data for networks completed"
 
-    def generate_sequence_gene_expression_statistics(self, show_chart=True):
+    def generate_sequence_gene_expression_statistics(self, show_species_charts=True, show_chart=True):
         i = -1
         if self.multiple_networks:
             for nw_ge_file in glob.glob(self.silix_nw_exp_data_folder_path + '/*.txt'):
@@ -85,78 +85,108 @@ class SilixNetworkGeneExpression(object):
             with open(gene_expression_statistics_file, 'a') as f_handle:
                 np.savetxt(f_handle, self.network_gene_expressions, delimiter=',')
 
-        if show_chart:
-            x_label = ""
-            y_label = ""
-            # Based on Chart_type pass data to charting function
-            print "Please select appropriate chart number from below to plot specific chart"
-            print "Network vs 9mM Ca factor and Spike factor charts\t\t\t\t\t:\t1"
-            print "9mM Ca factor vs Spike factor charts - means and standard deviation\t:\t2"
-            # x_column = input('Enter X-axis number:')
-            # y_column = input('Enter Y-axis number:')
-            # chart_type = input('Enter Chart Number:')
-            self.plot_chart(chart_type=2)
+        if show_species_charts:
+            self.generate_species_wise_gene_expression_statistics()
 
-    def generate_species_wise_gene_expression_statistics(self, show_chart):
+        if show_chart:
+            self.plot_chart()
+
+    def generate_species_wise_gene_expression_statistics(self):
         ehux_data = []
         geph_data = []
         if self.multiple_networks:
             for nw_ge_file in glob.glob(self.silix_nw_exp_data_folder_path + '/*.txt'):
                 mapping_data = np.genfromtxt(nw_ge_file, delimiter=',', dtype=str)
-                if len([x for x in mapping_data if str(x[0]).isdigit()]) > 0:
-                    ehux_data = np.vstack([x for x in mapping_data if str(x[0]).isdigit()])
-                if len([x for x in mapping_data if re.match(r'^evm.model.Contig', x[0])]) > 0:
-                    geph_data = np.vstack([x for x in mapping_data if re.match(r'^evm.model.Contig', x[0])])
-                if len(ehux_data) > 0:
-                    ehux_ca = np.array(ehux_data[:, 2], dtype=float)
-                    ehux_spike = np.array(ehux_data[:, 3], dtype=float)
-                    ehux_ttest = stats.ttest_ind(ehux_ca, ehux_spike, equal_var=False)
-                    ehux_nw_statistics = (
-                        [ehux_ca.mean(), ehux_ca.var(), ehux_ca.std(), ehux_spike.mean(), ehux_spike.var(),
-                         ehux_spike.std(), ehux_ttest.statistic, ehux_ttest.pvalue])
-                    self.network_ehux_gene_expression.append(ehux_nw_statistics)
-                if len(geph_data) > 0:
-                    geph_ca = np.array(geph_data[:, 2], dtype=float)
-                    geph_spike = np.array(geph_data[:, 3], dtype=float)
-                    geph_ttest = stats.ttest_ind(geph_ca, geph_spike, equal_var=False)
-                    geph_nw_statistics = (
-                        [geph_ca.mean(), geph_ca.var(), geph_ca.std(), geph_spike.mean(), geph_spike.var(),
-                         geph_spike.std(), geph_ttest.statistic, geph_ttest.pvalue])
-                    self.network_geph_gene_expression.append(geph_nw_statistics)
+                if len(mapping_data) > 0:
+                    nw_number = (int)(re.findall(r'\d+', nw_ge_file)[0])
+                    if len([x for x in mapping_data if str(x[0]).isdigit()]) > 0:
+                        ehux_data = np.vstack([x for x in mapping_data if str(x[0]).isdigit()])
+                    if len([x for x in mapping_data if re.match(r'^evm.model.Contig', x[0])]) > 0:
+                        geph_data = np.vstack([x for x in mapping_data if re.match(r'^evm.model.Contig', x[0])])
+                    if len(ehux_data) > 0:
+                        ehux_ca = np.array(ehux_data[:, 2], dtype=float)
+                        ehux_spike = np.array(ehux_data[:, 3], dtype=float)
+                        ehux_ttest = stats.ttest_ind(ehux_ca, ehux_spike, equal_var=False)
+                        ehux_nw_statistics = (
+                            [nw_number, ehux_ca.mean(), ehux_ca.var(), ehux_ca.std(), ehux_spike.mean(),
+                             ehux_spike.var(),
+                             ehux_spike.std(), ehux_ttest.statistic, ehux_ttest.pvalue])
+                        self.network_ehux_gene_expression.append(ehux_nw_statistics)
+                    if len(geph_data) > 0:
+                        geph_ca = np.array(geph_data[:, 2], dtype=float)
+                        geph_spike = np.array(geph_data[:, 3], dtype=float)
+                        geph_ttest = stats.ttest_ind(geph_ca, geph_spike, equal_var=False)
+                        geph_nw_statistics = (
+                            [nw_number, geph_ca.mean(), geph_ca.var(), geph_ca.std(), geph_spike.mean(),
+                             geph_spike.var(),
+                             geph_spike.std(), geph_ttest.statistic, geph_ttest.pvalue])
+                        self.network_geph_gene_expression.append(geph_nw_statistics)
         self.network_ehux_gene_expression = np.asarray(self.network_ehux_gene_expression)
         self.network_geph_gene_expression = np.asarray(self.network_geph_gene_expression)
+        #print self.network_ehux_gene_expression
 
-    def plot_chart(self, chart_type=1):
-        if chart_type == 1:
-            e = self.network_gene_expressions[:, 3]
-            e2 = self.network_gene_expressions[:, 6]
+    def plot_chart(self):
+        # PLOT Network Vs 9mM Ca factor Mean and Standard deviation  and Spike factor Mean and Standard Deviation
+        chart1_9mmsd = self.network_gene_expressions[:, 3]
+        chart1_spikesd = self.network_gene_expressions[:, 6]
+        fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
+        ax0.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 1], yerr=chart1_9mmsd,
+                     linestyle='None', fmt='-o')
+        ax0.set_title('9mM Ca factor Mean and Standard deviation')
+        ax0.set_ylabel(r'9mM Ca factor')
+        ax0.axhline(0)
+        ax1.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 4], yerr=chart1_spikesd,
+                     linestyle='None', fmt='o')
+        ax1.set_title('Spike factor Mean and Standard deviation')
+        ax1.set_ylabel(r'Spike factor')
+        ax1.axhline(0)
+        plt.xlim(-1, len(self.network_gene_expressions))
+        plt.xlabel("Networks", fontsize=16)
+
+        # PLOT 9mM Ca factor Mean vs Spike factor Mean with Standard Deviations
+        chart2_data = self.network_gene_expressions
+        chart2_9mmsd = chart2_data[:, 3]
+        chart2_spikesd = chart2_data[:, 6]
+        fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
+        ax0.errorbar(chart2_data[:, 1], chart2_data[:, 4], yerr=chart2_9mmsd, linestyle='None', fmt='-o')
+        ax0.set_title('9mM Ca factor Standard deviation')
+        ax0.axhline(0)
+        ax1.errorbar(chart2_data[:, 1], chart2_data[:, 4], yerr=chart2_spikesd, linestyle='None', fmt='o')
+        ax1.set_title('Spike factor Standard deviation')
+        ax1.axhline(0)
+        plt.xlabel('9mM Ca factor', fontsize=16)
+        plt.ylabel(r'Spike factor', fontsize=16)
+
+        # PLOT Network vs Species mean and Standard Deviation
+        if len(self.network_ehux_gene_expression) > 0 and len(self.network_geph_gene_expression) > 0:
+            chart3_ehux9mmsd = self.network_ehux_gene_expression[:, 3]
+            chart3_ehuxspikesd = self.network_ehux_gene_expression[:, 6]
+            chart3_geph9mmsd = self.network_geph_gene_expression[:, 3]
+            chart3_gephspikesd = self.network_geph_gene_expression[:, 6]
             fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
-            ax0.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 1], yerr=e,
-                         linestyle='None', fmt='-o')
+            ax0.errorbar(self.network_ehux_gene_expression[:, 0], self.network_ehux_gene_expression[:, 1],
+                         yerr=chart3_ehux9mmsd,
+                         linestyle='None', fmt='-o', label="Ehux")
+            ax0.errorbar(self.network_geph_gene_expression[:, 0], self.network_geph_gene_expression[:, 1],
+                         yerr=chart3_geph9mmsd,
+                         linestyle='None', fmt='s', label="Geph")
             ax0.set_title('9mM Ca factor Mean and Standard deviation')
             ax0.set_ylabel(r'9mM Ca factor')
+            ax0.legend()
             ax0.axhline(0)
-            ax1.errorbar(self.network_gene_expressions[:, 0], self.network_gene_expressions[:, 4], yerr=e2,
-                         linestyle='None', fmt='o')
+            ax1.errorbar(self.network_ehux_gene_expression[:, 0], self.network_ehux_gene_expression[:, 4],
+                         yerr=chart3_ehuxspikesd,
+                         linestyle='None', fmt='o', label="Ehux")
+            ax1.errorbar(self.network_geph_gene_expression[:, 0], self.network_geph_gene_expression[:, 4],
+                         yerr=chart3_gephspikesd,
+                         linestyle='None', fmt='s', label="Geph")
             ax1.set_title('Spike factor Mean and Standard deviation')
             ax1.set_ylabel(r'Spike factor')
+            ax1.legend()
             ax1.axhline(0)
-            plt.xlim(-1, len(self.network_gene_expressions))
+            plt.xlim(-1, len(self.network_ehux_gene_expression))
             plt.xlabel("Networks", fontsize=16)
-
-        elif chart_type == 2:
-            chart_data = self.network_gene_expressions
-            e = chart_data[:, 3]
-            e2 = chart_data[:, 6]
-            fig, (ax0, ax1) = plt.subplots(nrows=2, sharex=True, sharey=True)
-            ax0.errorbar(chart_data[:, 1], chart_data[:, 4], yerr=e, linestyle='None', fmt='-o')
-            ax0.set_title('9mM Ca factor Standard deviation')
-            ax0.axhline(0)
-            ax1.errorbar(chart_data[:, 1], chart_data[:, 4], yerr=e2, linestyle='None', fmt='o')
-            ax1.set_title('Spike factor Standard deviation')
-            ax1.axhline(0)
-            plt.xlabel('9mM Ca factor', fontsize=16)
-            plt.ylabel(r'Spike factor', fontsize=16)
+        # show all plots
         plt.show()
 
 
@@ -181,4 +211,4 @@ if __name__ == "__main__":
     # GENERATE scatter plot and statistics
     objSilixNw.generate_sequence_gene_expression_statistics(show_chart=True)
 
-    # objSilixNw.generate_species_wise_gene_expression_statistics(show_chart=True)
+
