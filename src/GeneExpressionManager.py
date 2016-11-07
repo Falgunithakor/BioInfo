@@ -32,9 +32,11 @@ class GeneExpressionManager(object):
         elif re.match(r'^evm.model.scaffold', sequence_no):
             gene_expression_data = self.iso_gene_expression_data
         # read gene expression line assuming first column as sequence name
+
         if len(gene_expression_data) > 0:
             gene_expression_row = gene_expression_data[np.where(gene_expression_data[:, 0] == sequence_no)]
 
         if len(gene_expression_row) is 0:
-            gene_expression_row = np.zeros((1, 4), dtype=np.int)
+            gene_expression_row = np.array([[sequence_no, 0, 0, 0]])
+        #print gene_expression_row
         return gene_expression_row
