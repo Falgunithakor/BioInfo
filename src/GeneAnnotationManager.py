@@ -16,11 +16,11 @@ class GeneAnnotationManager(object):
 
     def load_gene_annotation_data(self):
         self.geph_gene_annotation_data = \
-            np.genfromtxt(self.geph_gene_annotation_file_path, delimiter='\n', dtype=str, skip_header=1)
+            np.genfromtxt(self.geph_gene_annotation_file_path, delimiter='\n', dtype=None, skip_header=1)
         self.ehux_gene_annotation_data = \
-            np.genfromtxt(self.ehux_gene_annotation_file_path, delimiter='\n', dtype=str, skip_header=1)
+            np.genfromtxt(self.ehux_gene_annotation_file_path, delimiter='\n', dtype=None, skip_header=1)
         self.iso_gene_annotation_data = \
-            np.genfromtxt(self.iso_gene_annotation_path, delimiter='\n', dtype=str, skip_header=1)
+            np.genfromtxt(self.iso_gene_annotation_path, delimiter='\n', dtype=None, skip_header=1)
 
     def map_sequence_to_gene_annotation(self, sequence_no):
         gene_annotation_data = []
